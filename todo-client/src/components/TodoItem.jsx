@@ -57,12 +57,17 @@ const Text = styled.div`
         `}
 `;
 
-function TodoItem({id, done, text}) {
+function TodoItem({id, done, text, deleteTodo}) {
+
+    const handleDeleteClick = () => {
+        deleteTodo(id); // 삭제 함수 호출
+    }
+
     return(
         <TodoItemBlock>
             <CheckCircle done={done}>{done && <MdDone/>}</CheckCircle> {/* done==true이면 체크표시 나오도록 */}
             <Text done={done}>{text}</Text>
-            <Remove>
+            <Remove onClick={handleDeleteClick}>
                 <MdDelete/>
             </Remove>
         </TodoItemBlock>
