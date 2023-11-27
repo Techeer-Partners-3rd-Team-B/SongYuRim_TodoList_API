@@ -1,5 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { useRecoilState } from "recoil";
+import axios from "axios";
+import {todoListState} from "../states/Atom"
 
 const TodoHeadBlock = styled.div`
     padding-top: 48px;
@@ -29,11 +32,18 @@ const TodoHeadBlock = styled.div`
 `;
 
 function TodoHead(){
+    const [todos, setTodos] = useRecoilState(todoListState);
+
+    const today = new Date();
+    const week = ["일","월","화","수","목","금","토"];
+    let day = week[today.getDay()]
+    const formattedDate = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+
     return (
         <TodoHeadBlock>
-            <h1>2023 9월 18일</h1>
-            <div className="day">월요일</div>
-            <div className="tasks-left">3개</div>
+            <h1>{formattedDate}</h1>
+            <div className="day">{day}요일</div>
+            <div className="tasks-left">{todos.length}개</div>
         </TodoHeadBlock>
     );
 }

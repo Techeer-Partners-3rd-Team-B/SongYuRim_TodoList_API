@@ -80,15 +80,17 @@ function TodoItem({id, done, text}) {
         
     };
 
-    // useEffect(()=>{
-    //     getTodos();
-    // }, [setTodos]);
-
-    // console.log(typeof deleteTodo);
+    const updateTodo = async (id)=>{
+        const response = await axios.put(`/api/todos/${id}`);
+        const updateTodos = todos.map((todo)=>
+            todo.id === id? response.data : todo 
+        );
+        setTodos(updateTodos);
+    };
 
     return(
         <TodoItemBlock key={id}>
-            <CheckCircle done={done}>{done && <MdDone/>}</CheckCircle> {/* done==true이면 체크표시 나오도록 */}
+            <CheckCircle onClick={() => updateTodo(id)} done={done}>{done && <MdDone/>}</CheckCircle> {/* done==true이면 체크표시 나오도록 */}
             <Text done={done}>{text}</Text>
             <Remove onClick={() => deleteTodo(id)}>
                 <MdDelete/>
