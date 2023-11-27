@@ -6,9 +6,9 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { worker } from "./mocks/worker";
 
-if (process.env.NODE_ENV === "development") {
-  worker.start();
-}
+// if (process.env.NODE_ENV === "development") {
+//   worker.start();
+// }
 
 const router = createBrowserRouter([
   {

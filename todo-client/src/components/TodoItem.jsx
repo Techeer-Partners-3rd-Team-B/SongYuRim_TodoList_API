@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled, {css} from "styled-components";
 import {MdDone, MdDelete} from "react-icons/md";
+import { useRecoilState } from "recoil";
+import axios from "axios";
+import {todoListState} from "../states/Atom"
+
+
+
 
 const Remove = styled.div`
     display: flex;
@@ -57,17 +63,34 @@ const Text = styled.div`
         `}
 `;
 
-function TodoItem({id, done, text, deleteTodo}) {
+function TodoItem({id, done, text}) {
+    const [todos, setTodos] = useRecoilState(todoListState);
 
-    const handleDeleteClick = () => {
-        deleteTodo(id); // 삭제 함수 호출
-    }
+    const deleteTodo = async(id)=>{
+        try {
+            await axios.delete(`/api/todos/${id}`);
+            const filterTodos = todos.filter((todo)=>todo.id !== id);
+
+            setTodos(filterTodos);
+            console.log("delete!")
+            
+        } catch (error) {
+            console.log(error);
+        }
+        
+    };
+
+    // useEffect(()=>{
+    //     getTodos();
+    // }, [setTodos]);
+
+    // console.log(typeof deleteTodo);
 
     return(
-        <TodoItemBlock>
+        <TodoItemBlock key={id}>
             <CheckCircle done={done}>{done && <MdDone/>}</CheckCircle> {/* done==true이면 체크표시 나오도록 */}
             <Text done={done}>{text}</Text>
-            <Remove onClick={handleDeleteClick}>
+            <Remove onClick={() => deleteTodo(id)}>
                 <MdDelete/>
             </Remove>
         </TodoItemBlock>

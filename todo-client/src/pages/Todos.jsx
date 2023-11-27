@@ -18,10 +18,10 @@ const TestBlock = styled.div`
 function Test(){
     return(
         <>
-            <GlobalStyle/>
-            <TestBlock>
-                    <TodoTemplate><h1> Test page </h1></TodoTemplate>
-            </TestBlock>
+          <GlobalStyle/>
+          <TestBlock>
+              <TodoTemplate><h1> Test page </h1></TodoTemplate>
+          </TestBlock>
         </>
     )
 }

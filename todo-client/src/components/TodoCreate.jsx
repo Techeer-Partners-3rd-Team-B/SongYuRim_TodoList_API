@@ -1,37 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import styled, { css } from 'styled-components';
 import { MdAdd } from 'react-icons/md';
+import axios from "axios";
+import profile from "../assets/profile.png"
+import { useRecoilState } from "recoil";
+import {todoListState} from "../states/Atom"
+
+
 
 const CircleButton = styled.button`
-    background: #38d9a9;
-    &:hover {
-    background: #63e6be;
-    }
-    &:active {
-    background: #20c997;
-    }
+  background: #38d9a9;
+  &:hover {
+  background: #63e6be;
+  }
+  &:active {
+  background: #20c997;
+  }
 
-    z-index: 5;
-    cursor: pointer;
-    width: 80px;
-    height: 80px;
-    display: block;
-    align-items: center;
-    justify-content: center;
-    font-size: 60px;
-    position: absolute;
-    left: 50%;
-    bottom: 0px;
-    transform: translate(-50%, 50%);
-    color: white;
-    border-radius: 50%;
-    border: none;
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  z-index: 5;
+  cursor: pointer;
+  width: 80px;
+  height: 80px;
+  display: block;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  position: absolute;
+  left: 50%;
+  bottom: 0px;
+  transform: translate(-50%, 50%);
+  color: white;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    transition: 0.125s all ease-in;
+  transition: 0.125s all ease-in;
+
   ${props =>
     props.open &&
     css`
@@ -43,7 +50,8 @@ const CircleButton = styled.button`
         background: #fa5252;
       }
       transform: translate(-50%, 50%) rotate(45deg);
-    `}
+    `
+  }
 `;
 
 const InsertFormPositioner = styled.div`
@@ -78,26 +86,65 @@ const Input = styled.input`
 `;
 
 function TodoCreate() {
-    const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [todos, setTodos] = useRecoilState(todoListState);
+  const [imageFile, setImageFile] = useState();
 
-    const onToggle = () => setOpen(!open);
+  const createTodo = async(e) =>{
+    e.preventDefault();
+    console.log("creating");
 
-    return(
-        <>
-            {open && (
-                <InsertFormPositioner>
-                    <InsertForm>
-                        <Input autoFocus placeholder='할 일을 입력 후, Enter 를 누르세요'></Input>
-                    </InsertForm>
-                </InsertFormPositioner>
-            )}
+    const formData = new FormData();
+    setImageFile(profile);
+    // console.log(imageFile? "y":"n");
 
-            <CircleButton onClick={onToggle} open={open}> 
-            {/* 클릭하면 onToggle=true, open=false */}
-                <MdAdd/>
-            </CircleButton>
-        </>
-    )
+    formData.append("todoData", input);
+    formData.append("file", imageFile);
+
+    const response = await axios.post("/api/todos", formData, {
+    headers: {
+        "Content-Type": "multipart/form-data",
+    },
+    });
+
+    console.log(response.data);
+
+    //응답을 넘겨줘야 settodo로 새로 렌더링할텐데..
+    setTodos((prev) => [...prev, response.data]);
+
+    setInput("");
+  };
+  
+
+  const onToggle = () => setOpen(!open);
+
+  useEffect(()=>{
+    // getTodos(); 
+}, [setTodos]);
+
+
+  return(
+    <>
+      {open && (
+          <InsertFormPositioner>
+              <InsertForm onSubmit={createTodo}>
+                  <Input 
+                    autoFocus
+                    value={input}
+                    onChange={(e) => setInput(e.currentTarget.value)} 
+                    placeholder='할 일을 입력 후, Enter 를 누르세요'
+                  />
+              </InsertForm>
+          </InsertFormPositioner>
+      )}
+
+      <CircleButton onClick={onToggle} open={open}> 
+      {/* 클릭하면 onToggle=true, open=false */}
+          <MdAdd/>
+      </CircleButton>
+    </>
+  )
 }
 
 export default TodoCreate;

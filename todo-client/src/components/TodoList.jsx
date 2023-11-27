@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import TodoItem from "./TodoItem";
+import { useRecoilState } from "recoil";
+import {todoListState} from "../states/Atom"
 
 const TodoListBlock = styled.div`
     flex: 1; //자신이 차지 할 수 있는 영역을 꽉 채우도록
@@ -12,18 +14,24 @@ const TodoListBlock = styled.div`
 `;
 
 function TodoList(){
-    const [todos, setTodos] = useState();
+    // const setTodos = useRecoilState(editTodo);
+    const [todos, setTodos] = useRecoilState(todoListState);
 
     const getTodos = async()=>{
         await axios.get("/api/todos")
         .then((res)=>{
             setTodos(res.data.todos);
+            console.log(todos);
+        })
+        .catch((e)=>{
+            console.log(e);
         })
     };
 
     const deleteTodo = async(id)=>{
         await axios.delete(`/api/todos/${id}`);
         const filterTodos = todos.filter((todo)=>todo.id !== id);
+
         setTodos(filterTodos);
     };
 
@@ -33,30 +41,26 @@ function TodoList(){
         const updateTodos = todos.map((todo)=>
             todo.id === id? response.data : todo 
         );
-        setTodos(updateTodo);
-    }
-
-    const createTodo = async(e) =>{
-        e.preventDefault();
-
-        const formData = new FormData();
-        formData.append()
-    }
+        setTodos(updateTodos);
+    };
 
     useEffect(()=>{
         getTodos();
-    }, []);
+    }, [setTodos]);
 
     return (
     <TodoListBlock>
-        {todos.map((todo)=>{
-            <TodoItem 
+        {todos.map((todo)=>(
+
+            <TodoItem
+                key={todo.id} 
                 id={todo.id} 
                 done={todo.done} 
                 text={todo.title} 
-                deleteTodo={deleteTodo}
+                // deleteTodo={deleteTodo}
             />
-        })}
+
+        ))}
 
     </TodoListBlock>
     );
