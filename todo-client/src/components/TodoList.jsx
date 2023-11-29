@@ -21,27 +21,11 @@ function TodoList(){
         await axios.get("/api/todos")
         .then((res)=>{
             setTodos(res.data.todos);
-            console.log(todos);
+            // console.log(todos);
         })
         .catch((e)=>{
             console.log(e);
         })
-    };
-
-    const deleteTodo = async(id)=>{
-        await axios.delete(`/api/todos/${id}`);
-        const filterTodos = todos.filter((todo)=>todo.id !== id);
-
-        setTodos(filterTodos);
-    };
-
-    //서버에 알려주는 데이터는 없고, 단순히 특정 todo의 데이터만 받아와서 done이 true인지, false인지를 업데이트하기위함? 그럼 응답done=false로 하면안되는거아닌가? 토글돼야..?
-    const updateTodo = async (id)=>{
-        const response = await axios.put(`/api/todos/${id}`);
-        const updateTodos = todos.map((todo)=>
-            todo.id === id? response.data : todo 
-        );
-        setTodos(updateTodos);
     };
 
     useEffect(()=>{

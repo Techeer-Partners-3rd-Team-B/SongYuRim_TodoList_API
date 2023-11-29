@@ -121,7 +121,7 @@ function TodoCreate() {
 
   useEffect(()=>{
     // getTodos(); 
-}, [setTodos]);
+  }, [setTodos]);
 
 
   return(

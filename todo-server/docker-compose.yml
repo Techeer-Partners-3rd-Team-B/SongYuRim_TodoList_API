@@ -11,14 +11,14 @@ services:
     command:
       - --default-authentication-plugin=mysql_native_password
     ports:
-      - "3306:3306"
+      - "3310:3306"
     networks:
       - db_network
     restart: always
 
   spring-boot:
     container_name: todo-server
-    image: tkdals0978/todo-server
+    image: tkdals0978/todo-server-mac
     restart: always
     ports:
       - "8080:8080"
